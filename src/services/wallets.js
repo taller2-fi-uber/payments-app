@@ -36,10 +36,13 @@ const getWalletData = () => async id => {
   return wallet;
 };
 
-const getWallet = ({}) => async id => {
-  const provider = await new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
-  const wallet = await Wallet.findByPk(id);
-  return new ethers.Wallet(wallet.privateKey, provider);
+
+const getWallet = ({}) => async (index) => {
+  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+  const account = await Wallet.findByPk(index)
+   
+  return new ethers.Wallet(account.privateKey, provider); 
+
 };
 
 module.exports = ({ config }) => ({

@@ -16,10 +16,11 @@ function schema() {
 }
 
 function handler({ contractInteraction, walletService }) {
-  return async function (req, reply) {
-    const wallet = await walletService.getWallet(req.body.senderId);
-    const tx = await contractInteraction.deposit(wallet, req.body.amountInEthers, reply);
-    reply.send(tx);
+  return async function (req) {
+    senderId = req.body.senderId;
+    const wallet = await walletService.getWallet(senderId);
+    const amountInEthers = req.body.amountInEthers;    
+    return contractInteraction.deposit(senderId, wallet, amountInEthers);
   };
 }
 
