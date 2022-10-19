@@ -33,7 +33,7 @@ The following endpoints are available:
 - Get deposit receipt: GET /deposit/:txHash:
 
 - Get wallet balance: GET /balance/:id:
-- Get all deposits: GET /deposits
+- Get all deposits: GET /deposit
 - Get last deposit: GET /deposit/last
 
 ### Usage example

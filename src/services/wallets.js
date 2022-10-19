@@ -9,7 +9,7 @@ const getDeployerWallet = ({ config }) => async () => {
 };
 
 const createWallet = () => async () => {
-  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+  const provider = new ethers.providers.InfuraProvider("goerli", process.env.INFURA_API_KEY);
   // This may break in some environments, keep an eye on it
   const wallet = ethers.Wallet.createRandom().connect(provider);
   const new_wallet = await Wallet.create({
@@ -38,7 +38,7 @@ const getWalletData = () => async id => {
 
 
 const getWallet = ({}) => async (index) => {
-  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+  const provider = new ethers.providers.InfuraProvider("goerli", process.env.INFURA_API_KEY);
   const account = await Wallet.findByPk(index)
    
   return new ethers.Wallet(account.privateKey, provider); 

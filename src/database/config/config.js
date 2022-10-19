@@ -2,17 +2,17 @@ require("dotenv").config();
 
 module.exports = {
   development: {
-    username: process.env.DBUSERNAME,
-    password: process.env.DBPASSWORD,
-    database: process.env.DATABASE,
-    host: process.env.DBHOST,
-    dialect: "postgresql",
-    dialectOptions: {
-      ssl: {
-        require: false,
-        rejectUnauthorized: false,
-      },
-    },
+    username: process.env.DBUSERNAME || "root",
+    password: process.env.DBPASSWORD || "xlsaaa",
+    database: process.env.DATABASE || "monedero",
+    host: process.env.DBHOST || "localhost",
+    dialect: process.env.DIALECT || "mysql",
+    //dialectOptions: {
+    //  ssl: {
+    //    require: false,
+    //    rejectUnauthorized: false,
+    //  },
+    //},
   },
   test: {
     username: "root",
