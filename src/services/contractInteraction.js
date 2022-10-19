@@ -2,7 +2,7 @@ const ethers = require("ethers");
 const getDepositHandler = require("../handlers/getDepositHandler");
 const db = require("./../database/models/index");
 const { Wallet } = require("./../database/models/index");
-const {Deposit} = require('./../database/models/index');
+const { Deposit } = require('./../database/models/index');
 const { Transaction } = require("./../database/models/index"); // si llega a romper eliminar
 
 const getContract = (config, wallet) => {
@@ -71,7 +71,7 @@ const getDepositReceipt = ({}) => async depositTxHash => {
 };
 
 const getWalletBalance = ({ config }) => async walletId => {
-  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+  const provider = new ethers.providers.InfuraProvider("goerli", process.env.INFURA_API_KEY);
   const wallet = await Wallet.findByPk(walletId);
   const balance = await provider.getBalance(wallet.address);
   return { balance: ethers.utils.formatEther(balance), address: wallet.address, id: wallet.id };
