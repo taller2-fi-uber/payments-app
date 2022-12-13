@@ -7,7 +7,7 @@ const getHelloWorld = require("./handlers/getHelloWorldhandler");
 const getWalletBalance = require("./handlers/getWalletBalanceHandler");
 const getDepositsData = require("./handlers/getDepositsDataHandler");
 const getLastDepositData = require("./handlers/getLastDepositDataHandler");
-
+const postTransfer =require("./handlers/postTransferHandler")
 
 function getHelloWorldRoute({ services, config }) {
   return {
@@ -90,6 +90,15 @@ function getWalletBalanceRoute({ services, config }) {
   };
 }
 
+function postTransferRoute({ services, config }) {
+  return {
+    method: "POST",
+    url: "/transfer/:id",
+    schema: postTransfer.schema(config),
+    handler: postTransfer.handler({ config, ...services }),
+  };
+}
+
 module.exports = [
   getHelloWorldRoute,
   getWalletDataRoute,
@@ -99,5 +108,6 @@ module.exports = [
   getDepositRoute,
   getWalletBalanceRoute,
   getDepositsDataRoute,
-  getLastDepositDataRoute
+  getLastDepositDataRoute,
+  postTransferRoute
 ];
