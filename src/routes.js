@@ -84,7 +84,7 @@ function getLastDepositDataRoute({ services, config}) {
 function getWalletBalanceRoute({ services, config }) {
   return {
     method: "GET",
-    url: "/balance/:id",
+    url: "/balance",
     schema: getWalletBalance.schema(config),
     handler: getWalletBalance.handler({ config, ...services }),
   };

@@ -1,9 +1,7 @@
 const ethers = require("ethers");
-const getDepositHandler = require("../handlers/getDepositHandler");
-const db = require("./../database/models/index");
-const { Wallet } = require("./../database/models/index");
-const { Deposit } = require('./../database/models/index');
-const { Transaction } = require("./../database/models/index"); // si llega a romper eliminar
+const Wallet = require("../models/walletModel");
+const Deposit = require('../models/depositModel');
+const Transaction = require("../models/transactionModel");
 
 const getContract = (config, wallet) => {
   return new ethers.Contract(config.contractAddress, config.contractAbi, wallet);
@@ -27,12 +25,12 @@ const deposit = ({ config }) => async (senderId, senderWallet, amountToSend) => 
       //console.log("Transaction mined");
       const firstEvent = receipt && receipt.events && receipt.events[0];
       //console.log(firstEvent);
-      if (firstEvent && firstEvent.event == "DepositMade") {
+      if (firstEvent && firstEvent.event === "DepositMade") {
         deposits[tx.hash] = {
           senderAddress: firstEvent.args.sender,
           amountSent: firstEvent.args.amount,
         };
-      
+
         Deposit.create({
           senderId: senderId,
           from: tx.from,
@@ -40,7 +38,7 @@ const deposit = ({ config }) => async (senderId, senderWallet, amountToSend) => 
           amountInEthers: amountToSend,
           chainId: tx.chainId,
           createdAt: new Date(),
-          updatedAt: new Date(), 
+          updatedAt: new Date(),
         })
         .then(() => {
           console.log("desposito almacenado");
@@ -67,25 +65,27 @@ const deposit = ({ config }) => async (senderId, senderWallet, amountToSend) => 
 };
 
 const getDepositReceipt = ({}) => async depositTxHash => {
-  return Transaction.findByPk(depositTxHash);
+  return Transaction.findById(depositTxHash);
 };
 
 const getWalletBalance = ({ config }) => async walletId => {
   const provider = new ethers.providers.InfuraProvider("goerli", process.env.INFURA_API_KEY);
-  const wallet = await Wallet.findByPk(walletId);
+  const wallet = await Wallet.findById(walletId);
   const balance = await provider.getBalance(wallet.address);
-  return { balance: ethers.utils.formatEther(balance), address: wallet.address, id: wallet.id };
+  return {
+    balance: (ethers.utils.formatEther(balance)*1000000000), // convert to gwei
+    address: wallet.address,
+    id: wallet.id
+  };
 };
 
 const getDepositsData = ({config}) => async () => {
-  const deposits = await Deposit.findAll();
-  return deposits
-} 
+  return Deposit.find({});
+}
 
 const getLastDepositData = ({config}) => async () => {
-  const lastDeposit = await Deposit.findOne({order: [ ['createdAt', 'DESC'] ]});
-  return lastDeposit;
-} 
+  return Deposit.findOne({ order: [['createdAt', 'DESC']] });
+}
 
 module.exports = dependencies => ({
   deposit: deposit(dependencies),

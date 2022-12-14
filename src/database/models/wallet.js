@@ -15,11 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     {
       address: DataTypes.STRING,
       privateKey: DataTypes.STRING,
+      user: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "Wallet",
     },
+
   );
   return Wallet;
 };

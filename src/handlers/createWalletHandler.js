@@ -1,20 +1,20 @@
 function schema() {
   return {
-    params: {
+    headers: {
       type: "object",
       properties: {
-        id: {
-          type: "integer",
+        user: {
+          type: "string",
         },
       },
     },
-    required: ["id"],
+    required: ["user"],
   };
 }
 
 function handler({ walletService }) {
   return async function (req, reply) {
-    const body = await walletService.createWallet();
+    const body = await walletService.createWallet(req.headers.user);
     return reply.code(200).send(body);
   };
 }

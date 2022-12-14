@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { Wallet } = require("./../database/models/index"); //Aca llamamos a la instancia de la tabla de la bd Wallet
+const Wallet = require("../models/walletModel")
 
 const getDeployerWallet = ({ config }) => async () => {
   const provider = new ethers.providers.InfuraProvider(config.network, config.infuraApiKey);
@@ -8,40 +8,36 @@ const getDeployerWallet = ({ config }) => async () => {
   return wallet;
 };
 
-const createWallet = () => async () => {
+const createWallet = () => async (user) => {
   const provider = new ethers.providers.InfuraProvider("goerli", process.env.INFURA_API_KEY);
   // This may break in some environments, keep an eye on it
   const wallet = ethers.Wallet.createRandom().connect(provider);
   const new_wallet = await Wallet.create({
+    _id: user,
     address: wallet.address, // d-pons: agregado persistencia de datos
-    privateKey: wallet.privateKey,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    privateKey: wallet.privateKey
   });
-  const result = {
-    id: new_wallet.id,
-    address: new_wallet.address,
-    //privateKey: new_wallet.privateKey,
+  return {
+    id: new_wallet.id
   };
-  return result;
 };
 
 const getWalletsData = () => async () => {
-  const wallets = await Wallet.findAll({ attributes: { exclude: ["privateKey"] } }); // d-pons: busqueda en la bd
-  return wallets;
+   // d-pons: busqueda en la bd
+  return Wallet.find({}).select('_id address');
 };
 
 const getWalletData = () => async id => {
-  const wallet = await Wallet.findByPk(id, { attributes: { exclude: ["privateKey"] } }); // d-pons: busqueda en la bd
-  return wallet;
+   // d-pons: busqueda en la bd
+  return Wallet.findById(id).select('_id address');
 };
 
 
 const getWallet = ({}) => async (index) => {
   const provider = new ethers.providers.InfuraProvider("goerli", process.env.INFURA_API_KEY);
-  const account = await Wallet.findByPk(index)
-   
-  return new ethers.Wallet(account.privateKey, provider); 
+  const account = await Wallet.findById(index)
+
+  return new ethers.Wallet(account.privateKey, provider);
 
 };
 
