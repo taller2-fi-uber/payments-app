@@ -18,10 +18,9 @@ const transferToAddress = ({ config }) => async (senderId, destinationAddress, a
         //gasPrice: gas_price,
     }
 
-    const transaction = walletSigner.sendTransaction(tx)
-        console.log(transaction)
-        return "transferencia realizada" + transaction
-    
+    const transaction = await walletSigner.sendTransaction(tx)
+    console.log(transaction)
+    return { status: "OK", transaction};
 };
 
 module.exports = dependencies => ({

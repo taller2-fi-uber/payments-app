@@ -1,26 +1,32 @@
 function schema() {
   return {
-    params: {
+    headers: {
       type: "object",
       properties: {
-        senderId: {
-          type: "integer",
-        },
-        amountInEthers: {
+        user: {
           type: "string",
         },
       },
     },
-    required: ["senderId", "amountInEthers"],
+    params: {
+      type: "object",
+      properties: {
+        amountInGwei: {
+          type: "integer",
+        },
+      },
+    },
+    required: ["amountInGwei", "user"],
   };
 }
 
 function handler({ contractInteraction, walletService }) {
   return async function (req) {
-    senderId = req.body.senderId;
+    let senderId = req.headers.user;
     const wallet = await walletService.getWallet(senderId);
-    const amountInEthers = req.body.amountInEthers;    
-    return contractInteraction.deposit(senderId, wallet, amountInEthers);
+    const amountInEthers = req.body.amountInGwei / 1000000000
+    const stringAmount = amountInEthers.toFixed(8)
+    return contractInteraction.deposit(senderId, wallet, stringAmount);
   };
 }
 
