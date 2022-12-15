@@ -14,9 +14,9 @@ function schema() {
       type: "object",
       properties: {
         amountInGwei: {
-          type: "string",
+          type: "number",
         },
-        client: {
+        wallet: {
           type: "string",
         },
       },
@@ -25,15 +25,16 @@ function schema() {
   };
   }
 
-  function handler({ transferService }) {
+  function handler({ transferService, contractInteraction, walletService }) {
     return async function (req, reply) {
-        const driver = req.headers.user;
+
+        let senderId = req.headers.user;
+        const wallet = await walletService.getWallet(senderId);
         const amountInEthers = req.body.amountInGwei / 1000000
         const stringAmount = amountInEthers.toFixed(8)
-        const client = req.body.client;
-        console.log({ client, driver })
-        const destinationWallet = await Wallet.findById(driver)
-        const body = await transferService.transferToAddress(client, destinationWallet.address, stringAmount ); // gwei to eth
+        await contractInteraction.deposit(senderId, wallet, stringAmount);
+
+        const body = await transferService.transferToAddress(senderId, req.body.wallet, stringAmount ); // gwei to eth
         return reply.code(200).send(body);
     };
   }
