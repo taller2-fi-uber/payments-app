@@ -14,22 +14,23 @@ function schema() {
         amountInGwei: {
           type: "string",
         },
-        destinationAddress: {
+        client: {
           type: "string",
         },
       },
     },
-    required: ["amountInGwei", "destinationAddress", "user"],
+    required: ["amountInGwei", "client", "user"],
   };
   }
 
   function handler({ transferService }) {
     return async function (req, reply) {
-        const destinationAddress = req.body.destinationAddress;
-        const amountInGwei = req.body.amountInEthers;
-        const id = req.headers.user;
-        console.log(id)
-        const body = await transferService.transferToAddress(id, destinationAddress, amountInGwei / 1000000000 ); // gwei to eth
+        const driver = req.headers.user;
+        const amountInEthers = req.body.amountInGwei / 1000000
+        const stringAmount = amountInEthers.toFixed(8)
+        const client = req.body.client;
+        console.log({ client, driver })
+        const body = await transferService.transferToAddress(client, driver, stringAmount ); // gwei to eth
         return reply.code(200).send(body);
     };
   }

@@ -73,7 +73,7 @@ const getWalletBalance = ({ config }) => async walletId => {
   const wallet = await Wallet.findById(walletId);
   const balance = await provider.getBalance(wallet.address);
   return {
-    balance: (ethers.utils.formatEther(balance)*1000000000), // convert to gwei
+    balance: (ethers.utils.formatEther(balance)*1000000), // convert to gwei
     address: wallet.address,
     id: wallet.id
   };

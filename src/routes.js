@@ -93,7 +93,7 @@ function getWalletBalanceRoute({ services, config }) {
 function postTransferRoute({ services, config }) {
   return {
     method: "POST",
-    url: "/transfer/:id",
+    url: "/transfer",
     schema: postTransfer.schema(config),
     handler: postTransfer.handler({ config, ...services }),
   };
